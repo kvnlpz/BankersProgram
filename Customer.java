@@ -19,7 +19,7 @@ public class Customer implements Runnable {
         this.maxDemand = new int[maxDemand.length];
         this.theBank = theBank;
 
-        System.arraycopy(maxDemand,0,this.maxDemand,0,maxDemand.length);
+        System.arraycopy(maxDemand, 0, this.maxDemand, 0, maxDemand.length);
         numOfResources = maxDemand.length;
         request = new int[numOfResources];
         rand = new java.util.Random();
@@ -31,13 +31,17 @@ public class Customer implements Runnable {
             try {
                 SleepUtilities.nap();       // take a nap
                 // ... then, make a resource request
-                for (int i = 0; i < numOfResources; i++) { request[i] = rand.nextInt(maxDemand[i]+1); }
+                for (int i = 0; i < numOfResources; i++) {
+                    request[i] = rand.nextInt(maxDemand[i] + 1);
+                }
 
                 if (theBank.requestResources(customerNum, request)) {   // if customer can proceed
                     SleepUtilities.nap();   // use and release the resources
                     theBank.releaseResources(customerNum, request);
                 }
-            } catch (InterruptedException ie) { canRun = false; }
+            } catch (InterruptedException ie) {
+                canRun = false;
+            }
         }
         System.out.println("Thread # " + customerNum + " I'm interrupted.");
     }

@@ -11,5 +11,5 @@ public interface Bank {
     public boolean requestResources(int threadNum, int[] request);
 
     // release resources
-    public  void releaseResources(int threadNum, int[] release);
+    public void releaseResources(int threadNum, int[] release);
 }
