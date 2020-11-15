@@ -15,12 +15,17 @@ public class Factory {
         int threadNum = 0;
 
         try {
+            //;eaving it commented it out in case I ever  need it again
+            //String resourcesFromArgs = args[0] + "," + args[1] + "," + args[2];
 
-            String resourcesFromArgs = args[0] + "," + args[1] + "," + args[2];
             File f = new File(filename);
             System.out.println(f.getAbsolutePath());
             Scanner scanner = new Scanner(f);
-            String[] tokensFromFile = resourcesFromArgs.split(",");
+            //same thing here
+            //String[] tokensFromFile = resourcesFromArgs.split(",");
+            String resourcesFromFile = scanner.nextLine();
+            //Hopefully this is good enough since theyre similar to Vectors
+            String[] tokensFromFile = resourcesFromFile.split(",");
 
 
             int resourceCount = tokensFromFile.length;
