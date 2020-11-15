@@ -1,18 +1,16 @@
+import java.util.stream.IntStream;
 
-//-------------------------------------------------------------------------------------------------
-// Customer.java
-//
 public class Customer implements Runnable {
-    public static final int COUNT = 5;    // number of threads
+    public static final int COUNT = 10;    // maximum number of threads
 
-    private int numOfResources;     // N different resources
-    private int[] maxDemand;        // maximum this thread will demand
-    private int customerNum;        // customer number
-    private int[] request;          // request it is making
+    private final int numOfResources;     // N different resources
+    private final int[] maxDemand;        // maximum this thread will demand
+    private final int customerNum;        // customer number
+    private final int[] request;          // request it is making
 
-    private java.util.Random rand;  // random number generator
+    private final java.util.Random rand;  // random number generator
 
-    private Bank theBank;           // synchronizing object
+    private final Bank theBank;           // synchronizing object
 
     public Customer(int customerNum, int[] maxDemand, Bank theBank) {
         this.customerNum = customerNum;
@@ -31,13 +29,12 @@ public class Customer implements Runnable {
             try {
                 SleepUtilities.nap();       // take a nap
                 // ... then, make a resource request
-                for (int i = 0; i < numOfResources; i++) {
-                    request[i] = rand.nextInt(maxDemand[i] + 1);
-                }
+                IntStream.range(0, numOfResources).forEach(i -> request[i] = rand.nextInt(maxDemand[i] + 1));
 
                 if (theBank.requestResources(customerNum, request)) {   // if customer can proceed
                     SleepUtilities.nap();   // use and release the resources
                     theBank.releaseResources(customerNum, request);
+                    return; // finish thread after releasing resource
                 }
             } catch (InterruptedException ie) {
                 canRun = false;
@@ -46,3 +43,5 @@ public class Customer implements Runnable {
         System.out.println("Thread # " + customerNum + " I'm interrupted.");
     }
 }
+
+

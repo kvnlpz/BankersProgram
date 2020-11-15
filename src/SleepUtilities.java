@@ -1,11 +1,14 @@
-
-//-------------------------------------------------------------------------------------------------
 // SleepUtilities.java
 //
 // utility for causing a thread to sleep
 // we should be handling interrupted exceptions, but are not doing so for clarity
 
+
+//USING JAVA LANGUAGE LEVEL 10
+
 public class SleepUtilities {
+    private static final int NAP_TIME = 5;
+
     public static void nap() throws InterruptedException {
         nap(NAP_TIME);          // sleep between zero and NAP_TIME s
     }
@@ -18,7 +21,5 @@ public class SleepUtilities {
             throw e;
         }
     }
-
-    private static final int NAP_TIME = 5;
 }
 
