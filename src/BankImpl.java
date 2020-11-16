@@ -12,11 +12,11 @@ import java.util.stream.IntStream;
 public class BankImpl implements Bank {
     public static PrintStream o;
     private final int m;                      /*the number of resources*/
-    private final int[] available;            /*the amount available of each resource*/
     private final int[][] maximum;            /*the maximum demand of each thread*/
-    private final int[][] allocation;         /*the amount currently allocated to each thread*/
     private final int[][] need;               /*the remaining needs of each thread*/
+    private final int[] available;            /*the amount available of each resource*/
     private final boolean[] released;         /*released customers*/
+    private final int[][] allocation;         /*the amount currently allocated to each thread*/
     private int n;                            /*the number of threads in the system*/
 
     /*create a new bank*/
@@ -35,8 +35,8 @@ public class BankImpl implements Bank {
 //        } catch (FileNotFoundException e) {
 //            e.printStackTrace();
 //        }
-        m = resources.length;
         n = Customer.COUNT;
+        m = resources.length;
         available = new int[m];
         System.arraycopy(resources, 0, available, 0, m);
         maximum = new int[n][m];
@@ -66,9 +66,7 @@ public class BankImpl implements Bank {
     }
 
 
-    public void setN(int x){
-        this.n = x;
-    }
+
 
 
     //output state for each state
@@ -136,13 +134,15 @@ public class BankImpl implements Bank {
                     break;
                 }
             }
-
             if (index > -1) {
                 for (int i = 0; i < m; ++i) {
                     availableNow[i] += allocNow[index][i];
                     booleans[index] = true;
                 }
-            } else break;
+            } else
+            {
+                break;
+            }
         }
 
         /* if it is not finished return false */
@@ -183,33 +183,23 @@ public class BankImpl implements Bank {
                     allocation[threadNum][i] += request[i];
                     need[threadNum][i] -= request[i];
                 });
-
                 showVector(allocation[threadNum]);
                 System.out.print("\navailable ");
-
                 showVector(available);
                 System.out.print("\n");
                 getState();
-
-                if (IntStream.range(0, m).anyMatch(i -> need[threadNum][i] != 0)) {
-                    isDone = true;
-                }
-                if (!isDone) {
-                    result = true;
-                    isDone = true;
-                    /*customer is  done now we are  waiting to be released*/
-                }
+                if (IntStream.range(0, m).anyMatch(i -> need[threadNum][i] != 0)) { isDone = true;}
+                /*customer is  done now we are  waiting to be released*/
+                if (!isDone) { result = true; isDone = true; }
             }
-            if (!isDone) {
-                System.out.println("--->DENIED");  /*request doesn't lead to a safe state */
-            }
+            /*request doesn't lead to a safe state */
+            if (!isDone) { System.out.println("--->DENIED");}
         }
         return result;
     }
 
     public synchronized void releaseResources(int threadNum, int... release) {
-        System.out.print("------------------------------> #P" + threadNum + " has all its resources!" +
-                "\tRELEASING ALL and SHUTTING DOWN...\n");
+        System.out.print("------------------------------> #P" + threadNum + " has all its resources!" + "\tRELEASING ALL and SHUTTING DOWN...\n");
         System.out.print("======================== customer #" + threadNum + " releasing: ");
         showVector(allocation[threadNum]);
         System.out.print(", allocated=");
@@ -221,4 +211,12 @@ public class BankImpl implements Bank {
         System.out.print("\n");
         released[threadNum] = true;
     }
+
+
+    //helper func
+    public void setN(int x){
+        this.n = x;
+    }
+
+
 }
