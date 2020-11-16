@@ -101,22 +101,24 @@ public class BankImpl implements Bank {
 
     //decided to use varargs because I just learned about them, and it doesn't change anything so I left it
     private boolean isSafeState(int threadNum, int... request) {
-        int[] currentAvailable = new int[m];
-        System.arraycopy(available, 0, currentAvailable, 0, m);
-        int[][] currentAlloc = new int[n][m];
-        int[][] currentNeed = new int[n][m];
+        int[] availableNow = new int[m];
+        System.arraycopy(available, 0, availableNow, 0, m);
+        int[][] allocNow = new int[n][m];
+        int[][] needNow = new int[n][m];
         IntStream.range(0, n).forEach(i -> {
-            System.arraycopy(allocation[i], 0, currentAlloc[i], 0, m);
-            System.arraycopy(need[i], 0, currentNeed[i], 0, m);
+            System.arraycopy(allocation[i], 0, allocNow[i], 0, m);
+            System.arraycopy(need[i], 0, needNow[i], 0, m);
         });
 
-        boolean[] finish = new boolean[n];
-        Arrays.fill(finish, false);
+        boolean[] booleans = new boolean[n];
+
+        //Using java API to help me
+        Arrays.fill(booleans, false);
 
         IntStream.range(0, m).forEach(i -> {
-            currentAvailable[i] -= request[i];
-            currentAlloc[threadNum][i] += request[i];
-            currentNeed[threadNum][i] -= request[i];
+            availableNow[i] -= request[i];
+            allocNow[threadNum][i] += request[i];
+            needNow[threadNum][i] -= request[i];
         });
 
         while (true) {
@@ -124,12 +126,12 @@ public class BankImpl implements Bank {
             for (int i = 0; i < n; ++i) {
                 boolean hasEnoughResource = true;
                 for (int j = 0; j < m; ++j) {
-                    if (currentNeed[i][j] > currentAvailable[j]) {
+                    if (needNow[i][j] > availableNow[j]) {
                         hasEnoughResource = false;
                         break;
                     }
                 }
-                if (!finish[i] && hasEnoughResource) {
+                if (!booleans[i] && hasEnoughResource) {
                     index = i;
                     break;
                 }
@@ -137,14 +139,14 @@ public class BankImpl implements Bank {
 
             if (index > -1) {
                 for (int i = 0; i < m; ++i) {
-                    currentAvailable[i] += currentAlloc[index][i];
-                    finish[index] = true;
+                    availableNow[i] += allocNow[index][i];
+                    booleans[index] = true;
                 }
             } else break;
         }
 
         /* if it is not finished return false */
-        return IntStream.range(0, n).allMatch(i -> finish[i]);
+        return IntStream.range(0, n).allMatch(i -> booleans[i]);
     }
 
     /*
