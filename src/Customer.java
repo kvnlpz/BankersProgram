@@ -1,7 +1,7 @@
 import java.util.stream.IntStream;
 
 public class Customer implements Runnable {
-    public static final int COUNT = 10;    // maximum number of threads
+    public static final int COUNT = 20;    // maximum number of threads
 
     private final int numOfResources;     // N different resources
     private final int[] maxDemand;        // maximum this thread will demand

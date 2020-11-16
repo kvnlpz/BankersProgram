@@ -24,13 +24,17 @@ public class BankImpl implements Bank {
 
     // I hope you don't mind me using IntStream because I am utilizing new stuff i have learned
     //also using varargs
-    public BankImpl(int[] resources) {
-        try {
-            o = new PrintStream(new File("output.txt"));
-            System.setOut(o);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public BankImpl(int[] resources, String file) {
+        //The commented out code that is here is so that we can print the output to a file,
+        //so that it is easier to check the output
+//        try {
+
+//            o = new PrintStream(new File(file+"_output.txt")); //if we include the loop in Factory.java
+//            o = new PrintStream(new File("output.txt")); //if we dont include it
+//            System.setOut(o);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
         m = resources.length;
         n = Customer.COUNT;
         available = new int[m];
